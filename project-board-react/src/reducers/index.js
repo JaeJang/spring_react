@@ -5,5 +5,5 @@ import projectTaskReducer from './projectTaskReducer';
 export default combineReducers({
     
     errors: errorReducer,
-    project_task: projectTaskReducer,
+    project_tasks: projectTaskReducer,
 });
