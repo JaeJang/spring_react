@@ -1,30 +1,48 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+import { deleteProjectTask } from '../../actions/projectTaskActions';
 
-class ProjectTaskItem extends Component{
+class ProjectTaskItem extends Component {
+  onDeleteClick = pt_id => {
+    this.props.deleteProjectTask(pt_id);
+  };
+  render() {
+    const { project_task } = this.props;
 
-    render(){
-        return(
-            <div className="card mb-1 bg-light">
+    return (
+      <div className="card mb-1 bg-light">
+        <div className="card-header text-primary">
+          ID: {project_task.id}
+        </div>
+        <div className="card-body bg-light">
+          <h5 className="card-title">
+            {project_task.summary}
+          </h5>
+          <p className="card-text text-truncate ">
+            {project_task.acceptanceCriteria}
+          </p>
+          <Link to={`/updateProjectTask/${project_task.id}`} className="btn btn-primary">
+            View / Update
+          </Link>
 
-                <div className="card-header text-primary">
-                    ID: projectSequence
-                </div>
-                <div className="card-body bg-light">
-                    <h5 className="card-title">summary</h5>
-                    <p className="card-text text-truncate ">
-                        acceptanceCriteria
-                    </p>
-                    <a href={""} className="btn btn-primary">
-                        View / Update
-                    </a>
-
-                    <button className="btn btn-danger ml-4">
-                        Delete
-                    </button>
-                </div>
-            </div>
-        );
-    }
+          <button
+            className="btn btn-danger ml-4"
+            onClick={() => {
+              this.onDeleteClick(project_task.id);
+            }}
+          >
+            Delete
+          </button>
+        </div>
+      </div>
+    );
+  }
 }
 
-export default ProjectTaskItem;
+ProjectTaskItem.propTypes = {
+  deleteProjectTask: PropTypes.func.isRequired
+};
+
+export default connect(null, { deleteProjectTask })(ProjectTaskItem);

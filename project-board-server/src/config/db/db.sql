@@ -1,0 +1,9 @@
+CREATE DATABASE IF NOT EXISTS Project;
+
+CREATE TABLE IF NOT EXISTS ProjectTask(
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    summary TINYTEXT NOT NULL,
+    acceptanceCriteria TEXT NOT NULL,
+    status VARCHAR(255)
+);
+

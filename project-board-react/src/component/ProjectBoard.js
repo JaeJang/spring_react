@@ -1,50 +1,79 @@
-import React, { Component } from "react";
-import { Link } from "react-router-dom";
-import ProjectTaskItem from "./ProjectTask/ProjectTaskItem";
-import { connect } from "react-redux";
-import PropTypes from "prop-types";
-import { getBacklog } from "../actions/projectTaskActions";
+import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
+import ProjectTaskItem from './ProjectTask/ProjectTaskItem';
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
+import { getBacklog } from '../actions/projectTaskActions';
 
 class ProjectBoard extends Component {
   componentDidMount() {
     this.props.getBacklog();
   }
 
-  render() {
-    const { project_tasks } = this.props.project_tasks;
+  BoardContent = project_tasks => {
+    const todoItems = [];
+    const inProgressItems = [];
+    const doneItems = [];
 
-    let BoardContent;
-    let todoItems = [];
-    let inProgressItems = [];
-    let doneItems = [];
+    if (project_tasks.length < 1) {
+      return (
+        <div className="alert alert-info text-center" role="alert">
+          No Project Tasks on this board
+        </div>
+      );
+    } else {
+      const tasks = project_tasks.map(project_task =>
+        <ProjectTaskItem key={project_task.id} project_task={project_task} />
+      );
 
-    const BoardAlgorithm = project_tasks => {
-      if (project_tasks.length < 1) {
-        return (
-          <div className="alert alert-info text-center" role="alert">
-            No Project Tasks on this board
-          </div>
-        );
-      } else {
-        const tasks = project_tasks.map(project_task => (
-          <ProjectTaskItem key={project_task.id} project_task={project_task} />
-        ));
-
-        for (let i = 0; i < tasks.length; i++) {
-          if (tasks[i].props.project_task.status === "TO_DO") {
-            todoItems.push(tasks[i]);
-          }
-          if (tasks[i].props.project_task.status === "IN_PROGRESS") {
-            inProgressItems.push(tasks[i]);
-          }
-          if (tasks[i].props.project_task.status === "DONE") {
-            doneItems.push(tasks[i]);
-          }
+      for (let i = 0; i < tasks.length; i++) {
+        if (tasks[i].props.project_task.status === 'TO_DO') {
+          todoItems.push(tasks[i]);
+        }
+        if (tasks[i].props.project_task.status === 'IN_PROGRESS') {
+          inProgressItems.push(tasks[i]);
+        }
+        if (tasks[i].props.project_task.status === 'DONE') {
+          doneItems.push(tasks[i]);
         }
       }
-    };
+      return (
+        <React.Fragment>
+          <div className="container">
+            <div className="row">
+              <div className="col-md-4">
+                <div className="card text-center mb-2">
+                  <div className="card-header bg-secondary text-white">
+                    <h3>TO DO</h3>
+                  </div>
+                </div>
+                {todoItems}
+              </div>
+              <div className="col-md-4">
+                <div className="card text-center mb-2">
+                  <div className="card-header bg-primary text-white">
+                    <h3>In Progress</h3>
+                  </div>
+                </div>
+                {inProgressItems}
+              </div>
+              <div className="col-md-4">
+                <div className="card text-center mb-2">
+                  <div className="card-header bg-success text-white">
+                    <h3>Done</h3>
+                  </div>
+                </div>
+                {doneItems}
+              </div>
+            </div>
+          </div>
+        </React.Fragment>
+      );
+    }
+  };
 
-    BoardAlgorithm(project_tasks);
+  render() {
+    const { project_tasks } = this.props.project_tasks;
 
     return (
       <div className="container">
@@ -53,58 +82,7 @@ class ProjectBoard extends Component {
         </Link>
         <br />
         <hr />
-        {
-          //<!-- Backlog STARTS HERE -->
-        }
-        <div className="container">
-          <div className="row">
-            <div className="col-md-4">
-              <div className="card text-center mb-2">
-                <div className="card-header bg-secondary text-white">
-                  <h3>TO DO</h3>
-                </div>
-              </div>
-
-              {
-                //<!-- SAMPLE PROJECT TASK STARTS HERE -->
-              }
-
-              {todoItems}
-
-              {
-                //<!-- SAMPLE PROJECT TASK ENDS HERE -->
-              }
-            </div>
-            <div className="col-md-4">
-              <div className="card text-center mb-2">
-                <div className="card-header bg-primary text-white">
-                  <h3>In Progress</h3>
-                </div>
-              </div>
-              {
-                //<!-- SAMPLE PROJECT TASK STARTS HERE -->
-              }
-              {inProgressItems}
-              {
-                //<!-- SAMPLE PROJECT TASK ENDS HERE -->
-              }
-            </div>
-            <div className="col-md-4">
-              <div className="card text-center mb-2">
-                <div className="card-header bg-success text-white">
-                  <h3>Done</h3>
-                </div>
-              </div>
-              {
-                //<!-- SAMPLE PROJECT TASK STARTS HERE -->
-              }
-              {doneItems}
-              {
-                //<!-- SAMPLE PROJECT TASK ENDS HERE -->
-              }
-            </div>
-          </div>
-        </div>
+        {this.BoardContent(project_tasks)}
       </div>
     );
   }
